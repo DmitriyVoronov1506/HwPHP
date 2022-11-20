@@ -86,18 +86,12 @@
                         echo "<b class=\"filechecker\">'$extension' invalid format. You can send only pictures!<b>";
                     }
                 } 
-                else {
-                    echo "<b class=\"filechecker\">Data is empty!<b>";
-                }
             } 
             else {
                 echo "<b class=\"filechecker\"> Error!<b>";
             }
         } 
-        else {
-            echo "<b class=\"filechecker\"> No transmission!<b>";
-        }
-
+        
         echo '<br /><br />'
         
 ?>
