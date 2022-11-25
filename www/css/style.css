@@ -6,3 +6,24 @@
     font-size: xx-large;
     color: rgb(50, 30, 179);
 }
+
+.mytable {
+    box-shadow: 0 5px 15px black;
+}
+.mytableH {
+    background-color: white;
+}
+.mytableH th {
+    padding: 5px;
+    background-color: #c52727;
+}
+
+.mytable td {
+    background-color: #7a6daa;
+}
+
+.mytableD {
+    border-top: 1px solid black;
+    padding: 10px;
+}
+
