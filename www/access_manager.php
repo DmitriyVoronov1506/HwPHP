@@ -12,9 +12,28 @@ if( is_file( $local_path ) ) {          // запрос - существующи
 }
 
 
-$path_parts = explode( '/', $path ) ;  
+$path_parts = explode( '/', $path ) ;
 
-include "_layout.php" ;
+// ~MiddleWare
+
+include "dbms.php" ;
+
+if( empty( $connection ) ) {
+    echo "DB error"; 
+    exit ;
+}
+
+include "auth.php" ;
+
+// ~Controllers
+$controller_file = "controllers/" . $path_parts[1] . "_controller.php" ;  // [1] - первая непустая часть (суть контроллер)
+if( is_file( $controller_file ) ) {
+    include $controller_file ;
+}
+else {
+    // ~View
+    include "_layout.php" ;
+}
 
 function flush_file( $filename ) {
     ob_clean() ;                               // очищаем буферизацию
@@ -30,6 +49,7 @@ function flush_file( $filename ) {
         case 'png' :
         case 'jpg' :
         case 'gif' :
+        case 'ico' :
             $content_type = "image/$ext" ; 
             break ;
 
