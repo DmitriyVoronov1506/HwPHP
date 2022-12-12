@@ -20,7 +20,7 @@
                     
                 <?php endif ?>
 
-                <form class="registerForm" method="post">
+                <form class="registerForm" method="post" enctype="multipart/form-data">
                     <div class="reg-form-control-wrapper">
                         <div class="reg-form-control">
                             <label for="login">Login</label>
@@ -74,6 +74,17 @@
                                 <div class="reg-error"><?= $view_data[ 'reg_error' ] ?></div>
                              <?php endif ?>
 
+                        </div>
+                    </div>
+                    <div class="reg-form-control-wrapper">
+                        <div class="reg-form-control">
+                            <label for="email">Avatar</label>
+                            <input type="file" name="avatar" />
+
+                            <?php if( isset( $view_data[ 'reg_error' ] ) && in_array( $view_data[ 'reg_error' ], $reg_error[ 'file_err' ] ) ) : ?>
+                                <div class="reg-error"><?= $view_data[ 'reg_error' ] ?></div>
+                            <?php endif ?>
+                            
                         </div>
                     </div>
                     <button class="reg-button">Registration</button>

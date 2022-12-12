@@ -17,19 +17,9 @@
         <a href="/layout">Шаблонизация</a>
         <a href="/formdata">Данные форм</a>
         <a href="/db">Работа с БД</a>
+        <a style="color:maroon" href="/email_test">E-mail</a>
 
-        <?php if( is_array( $_AUTH ) ) { ?>
-            <b>Hello</b>
-        <?php } else {  ?>
-            <form method="post">
-                <label><input name="userlogin" placeholder="login" /></label>
-                <label><input name="userpassw" type="password" /></label>
-                <button>Log in</button>
-            </form>
-            <?php if( is_string( $_AUTH ) ) { echo $_AUTH ; } ?>
-
-            <a href="/register">Регистрация</a>
-        <?php }  ?>
+        <?php include "_auth.php" ?>
         
     </nav>
 
@@ -46,6 +36,7 @@
             case 'fundamentals' : 
             case 'layout'       :
             case 'db'           :
+            case 'email_test'   :
             case 'formdata'     :
             case 'register'     : include "{$path_parts[1]}.php" ; break ;
             default             : include "404.php";

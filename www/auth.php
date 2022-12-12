@@ -1,7 +1,12 @@
 <?php
-// Аутентификация: после скрипта появляется $_AUTH, если false - не было проверки,
-//  если строка, то это сообщение об отказе (ошибке), если массив, то успешно
-$_AUTH = false ;
+
+session_start() ;  // включаем работу с сессиями
+$_CONTEXT[ 'auth_user' ] = false ;
+// традиционно первым проверяется выход
+if( isset( $_GET[ 'logout' ] ) ) {
+    logout();
+}
+
 if( isset( $_POST[ 'userlogin' ] ) 
  && isset( $_POST[ 'userpassw' ] ) ) {   // переданы данные аутентификации
     // находим данные в БД по логину
@@ -14,20 +19,63 @@ if( isset( $_POST[ 'userlogin' ] )
             $hash = md5( $_POST[ 'userpassw' ] . $salt ) ;  // хешируем переданный пароль и соль
             if( $hash == $row[ 'pass' ] ) {  // сравниваем с сохраненным хешем
                 // авторизация успешна
-                $_AUTH = $row ;   // все данные из БД оставляем в проекте (массив)
+                // $_AUTH = $row ;   // все данные из БД оставляем в проекте (массив)
+                // сохраняем в сессии факт авторизации - id пользователя
+                $_SESSION[ 'auth_id' ] = $row[ 'id' ] ;
+                $_SESSION[ 'auth_time' ] = time() ;
             }
             else {  // пароль неправильный
-                $_AUTH = "access denied" ;
+                //$_AUTH = "access denied" ;
+                $_SESSION[ 'auth_error' ] = "access denied" ;
             }
         }
         else {  // такого логина нет в БД
-            $_AUTH = "access restricted" ;
+            //$_AUTH = "access restricted" ;
+            $_SESSION[ 'auth_error' ] = "access restricted" ;
         }
     }
     catch( PDOException $ex ) {
         echo $ex->getMessage() ;
         exit ;
     }
+
+    header( "Location: " . $_CONTEXT[ 'path' ] ) ;
+    exit ;
+}
+
+if( isset( $_SESSION[ 'auth_id' ] ) ) {   // есть сохраненные данные аутентификации
+    // проверяем длительность авторизованного режима
+    $auth_interval = time() - $_SESSION[ 'auth_time' ] ;
+    $_CONTEXT[ 'auth_interval' ] = $auth_interval ;
+    if( $auth_interval > 60 ) {
+        logout() ;
+    }
+    // если интересует только время простоя (Idle), то здесь нужно обновить сохраненное время
+    // $_SESSION[ 'auth_time' ] = time() ;
+    // извлекаем данные о пользователе по сохраненному id
+    $sql = "SELECT * FROM Users u WHERE u.`id` = ?" ;
+    try {
+        $prep = $_CONTEXT[ 'connection' ]->prepare( $sql ) ;
+        $prep->execute( [ $_SESSION[ 'auth_id' ] ] ) ;
+        $row = $prep->fetch( PDO::FETCH_ASSOC ) ;
+        $_CONTEXT[ 'auth_user' ] = $row ;
+        if( $row ) {
+            unset( $_CONTEXT[ 'auth_user' ][ 'pass' ] ) ;
+            unset( $_CONTEXT[ 'auth_user' ][ 'salt' ] ) ;
+        }
+    }
+    catch( PDOException $ex ) {
+        echo $ex->getMessage() ;
+        exit ;
+    }
+}
+
+function logout() {
+    unset( $_SESSION[ 'auth_id' ] ) ;
+    // по требованиям безопасности после смены авторизации необходимо перезагрузить
+    // и желательно перевести на заведомо не требующую авторизации страницу - на главную
+    header( "Location: /" ) ;
+    exit ;
 }
 
 /*

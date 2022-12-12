@@ -1,4 +1,9 @@
 <?php
+
+$_CONTEXT = [] ; // наши глобальные данные - контекст запроса
+$_CONTEXT[ 'path' ] = $path ; // сохраняем в контексте для доступа из других файлов
+$_CONTEXT[ 'image_extensions' ] = ['.jpg', '.png','.gif','.jpeg'] ;
+
 $path = explode( '?', $_SERVER[ 'REQUEST_URI' ] )[0] ;     // адрес запроса - начало маршрутизации
 /* Создание диспетчера доступа приводит к тому, что запросы к файлам,
    которые раньше автоматически "отдавал" Apache, теперь приходят
@@ -14,6 +19,8 @@ if( is_file( $local_path ) ) {          // запрос - существующи
 
 $path_parts = explode( '/', $path ) ;
 
+$_CONTEXT[ 'path_parts' ] = $path_parts;
+
 // ~MiddleWare
 
 include "dbms.php" ;
@@ -22,6 +29,8 @@ if( empty( $connection ) ) {
     echo "DB error"; 
     exit ;
 }
+
+$_CONTEXT[ 'connection' ] = $connection ;
 
 include "auth.php" ;
 
@@ -52,6 +61,9 @@ function flush_file( $filename ) {
         case 'ico' :
             $content_type = "image/$ext" ; 
             break ;
+        case 'svg' :
+            $content_type = "image/svg+xml" ;
+            break ;  
 
         default:  return false ;               // недопустимое расширение - не отдаем файл
     }

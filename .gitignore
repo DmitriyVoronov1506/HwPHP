@@ -17,6 +17,8 @@
 /logs/*
 !/logs/empty
 /log/*
+/lib/*
+/www/avatars/*
 
 # CakePHP 2
 
