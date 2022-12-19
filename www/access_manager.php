@@ -1,14 +1,13 @@
 <?php
 
+$_LOGGER_FILE = "logs/pv011_log.txt" ;
 $_CONTEXT = [] ; // наши глобальные данные - контекст запроса
 $_CONTEXT[ 'path' ] = $path ; // сохраняем в контексте для доступа из других файлов
 $_CONTEXT[ 'image_extensions' ] = ['.jpg', '.png','.gif','.jpeg'] ;
 
-$path = explode( '?', $_SERVER[ 'REQUEST_URI' ] )[0] ;     // адрес запроса - начало маршрутизации
-/* Создание диспетчера доступа приводит к тому, что запросы к файлам,
-   которые раньше автоматически "отдавал" Apache, теперь приходят
-   к нам 
-*/
+$path = explode( '?', urldecode( $_SERVER[ 'REQUEST_URI' ] ) )[0] ; // адрес запроса - начало маршрутизации
+
+
 $local_path = '.' . $path ;             // file_exists - и файлы, и папки. is_file - только файлы
 if( is_file( $local_path ) ) {          // запрос - существующий файл
     if( flush_file( $local_path ) )     // наша функция отправки файла (см. ниже)
@@ -20,14 +19,15 @@ if( is_file( $local_path ) ) {          // запрос - существующи
 $path_parts = explode( '/', $path ) ;
 
 $_CONTEXT[ 'path_parts' ] = $path_parts;
+$_CONTEXT[ 'logger' ] = make_logger() ;
+$_CONTEXT[ 'show500' ] = function() { header( "Location: /page500.html" ) ; exit ; } ;
 
 // ~MiddleWare
 
 include "dbms.php" ;
 
 if( empty( $connection ) ) {
-    echo "DB error"; 
-    exit ;
+    $_CONTEXT['show500']() ; // exit - inside function
 }
 
 $_CONTEXT[ 'connection' ] = $connection ;
@@ -70,6 +70,15 @@ function flush_file( $filename ) {
     header( "Content-Type: $content_type" ) ;  // заголовок с типом контента
     readfile( $filename ) ;                    // копируем файл в ответ сервера            
     return true ;                     
+}
+
+function make_logger() {
+    return function( $msg, $code = 500 ) {
+        global $_LOGGER_FILE ;
+        $f = fopen( $_LOGGER_FILE, "at" ) ;
+        fwrite( $f, date( 'Y-m-d H:i:s ' ) . $code . ' ' . $msg . "\n" ) ;
+        fclose( $f ) ;
+    } ;
 }
 
 // суперглобальные массивы - массивы, доступные из любой "точки" РНР

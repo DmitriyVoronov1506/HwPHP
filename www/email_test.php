@@ -57,4 +57,4 @@ if(!$mail->Send()) {
  require          то же самое, но если файла нет - фатальная ошибка (работа останавливается)
  require_once
  @include_once "TheClass.php" ;
- if( ! class_exists( "TheClass" ) ) ... местная обработка ошибки
+ if( ! class_exists( "TheClass" ) ) ... местная обработка ошибки*/

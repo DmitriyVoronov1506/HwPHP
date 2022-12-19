@@ -113,3 +113,175 @@
     max-height: 40px;
     max-width: 50px;
 }
+
+/* Style for profile.php */
+.profile-container {
+    align-items: center;
+	display: flex;
+	flex-direction: column;
+	justify-content: center;
+    padding-top: 30px;
+}
+.profile-avatar {
+    border: 1px solid black;
+    border-radius: 50%;
+    box-shadow: 0px 0px 15px #5e5373;
+    height: 150px;
+    width: 150px;
+}
+.profile-name {
+    color:#5e5373;
+    margin-top: 0px;
+    text-shadow: 1px 1px 1px black;
+}
+.profile-table {
+    border: 2px solid black;
+    border-spacing: 0;
+    border-collapse: collapse;
+}
+.profile-table tr td {
+    border: 1px solid black;
+    padding: 5px;
+}
+.profile-table tr td:first-child {
+    background-color: #beb4d3;
+}
+.profile-input {
+    background-color: transparent;
+    font-weight: 600;
+    padding: 5px;
+}
+.update-profile-btn {
+    border: 1px solid black;
+    background-color: transparent;
+    box-shadow: 0px 0px 5px black;
+    font-weight: bold;
+    margin: 10px;
+    padding: 10px;
+}
+.update-profile-btn:hover {
+    background-color: rgba(0, 0, 0, 0.3);
+    box-shadow: 0px 0px 5px black;
+}
+
+/* Style for shop.php */
+
+.product {
+
+    box-shadow: 0 0 5px 3px lightgray; 
+    display: inline-block;
+    height: 500px;
+    margin: 20px;
+    padding: 5px;
+    vertical-align: top;
+    width: 300px;
+}
+
+.product .img-container {
+    background-color: #eee;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    height: 295px;
+    margin-bottom: 10px;
+    /* width: 290px; */
+}
+
+.product img {
+  /* margin:  */
+    display: block;
+    margin: auto;
+    max-height: 270px;
+    max-width: 270px;
+}
+
+.product h4, h5 {
+    margin: 3px;
+    padding: 0;
+}
+
+.product h5 {
+    font-weight: normal;
+}
+
+.product b {
+   font-size: 20px;
+}
+
+/*======================Star Rating========================*/
+
+.rating-area {
+    overflow: hidden;
+    display: flex;
+    flex-direction: row-reverse;
+    justify-content: flex-end;
+}
+
+    .rating-area span {
+        font-size: 28px;
+    }
+
+    .rating-area:not(:checked) > input {
+        display: none;
+    }
+
+    .rating-area:not(:checked) > label {
+        float: right;
+        width: 42px;
+        padding: 0;
+        cursor: pointer;
+        font-size: 32px;
+        line-height: 32px;
+        color: lightgrey;
+        text-shadow: 1px 1px #bbb;
+    }
+
+        .rating-area:not(:checked) > label:before {
+           content: '★';
+        }
+
+    .rating-area > input:checked ~ label {
+        color: gold;
+        text-shadow: 1px 1px #c60;
+    }
+
+    .rating-area:not(:checked) > label:hover,
+
+    .rating-area:not(:checked) > label:hover ~ label {
+        color: gold;
+    }
+
+    .rating-area > input:checked + label:hover,
+
+    .rating-area > input:checked + label:hover ~ label,
+
+    .rating-area > input:checked ~ label:hover,
+
+    .rating-area > input:checked ~ label:hover ~ label,
+
+    .rating-area > label:hover ~ input:checked ~ label {
+        color: gold;
+        text-shadow: 1px 1px goldenrod;
+    }
+
+.rate-area > label:active {
+    position: relative;
+}
+
+/*------------ Paginator -----------------*/
+
+.paginator {
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+    align-items: center;
+    font-size: 22px;
+}
+
+.paginator a, .paginator b, .paginator span {
+    margin: 0 1ex;
+}
+
+.paginator b {
+    font-size: 28px;
+}

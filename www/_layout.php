@@ -5,7 +5,7 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="stylesheet" href="/css/style.css" />
-    <title>PV011</title>
+    <title>PV011 <?= $_CONTEXT['page_title'] ?? '' ?></title>
 
 </head>
 <body>
@@ -18,6 +18,8 @@
         <a href="/formdata">Данные форм</a>
         <a href="/db">Работа с БД</a>
         <a style="color:maroon" href="/email_test">E-mail</a>
+        <li><a href="/register">Register</a></li>
+        <li><a href="/shop">Shop</a></li>
 
         <?php include "_auth.php" ?>
         
@@ -38,6 +40,8 @@
             case 'db'           :
             case 'email_test'   :
             case 'formdata'     :
+            case 'shop' :
+            case 'profile' : include "views/{$path_parts[1]}.php" ; break ;
             case 'register'     : include "{$path_parts[1]}.php" ; break ;
             default             : include "404.php";
     }

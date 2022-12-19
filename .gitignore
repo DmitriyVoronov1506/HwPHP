@@ -19,7 +19,8 @@
 /log/*
 /lib/*
 /www/avatars/*
-
+/www/images*
+/www/logs*
 # CakePHP 2
 
 /app/tmp/*

@@ -8,11 +8,17 @@ if( empty( $_GET[ 'code' ] ) ) {   // несанкционированный п�
     exit ;
 }
 
+if( empty( $_CONTEXT ) ) {  // массив, создаваемый в диспетчере доступа, если его нет - неправильный запуск
+    echo "Неправильный запуск" ;
+    exit ;
+}
+
 if( isset( $_GET[ 'email' ] ) ) {  // переход по ссылке из письма
+    
     $sql = "SELECT COUNT(u.id) FROM Users u WHERE u.email = ? AND u.confirm = ?" ;
     try {
         $prep = $_CONTEXT[ 'connection' ]->prepare( $sql ) ;
-        $prep->execute( [ $_GET[ 'email' ], $_GET[ 'code'] ] ) ;
+        $prep->execute( [ $_GET[ 'email' ], $_GET[ 'code' ] ] ) ;
         $cnt = $prep->fetch( PDO::FETCH_NUM )[0] ;
         if( $cnt == 0 ) {
             echo "Неправильный код подтверждения" ;
@@ -21,7 +27,7 @@ if( isset( $_GET[ 'email' ] ) ) {  // переход по ссылке из пи
         else {
             $sql = "UPDATE Users u SET u.confirm = NULL WHERE u.email = ? AND u.confirm = ?" ;
             $prep = $_CONTEXT[ 'connection' ]->prepare( $sql ) ;
-            $prep->execute( [ $_GET[ 'email' ], $_GET[ 'code'] ] ) ;
+            $prep->execute( [ $_GET[ 'email' ], $_GET[ 'code' ] ] ) ;
             echo "Почта подтверждена" ;
             exit ;
         }
@@ -31,22 +37,23 @@ if( isset( $_GET[ 'email' ] ) ) {  // переход по ссылке из пи
         exit ;
     }
 }
-else {   // б) со страницы ввода кода
-    f( empty( $_CONTEXT[ 'auth_user' ] ) ) {
-        echo "Авторизуйтесь для подтверждения почты" ;
+else {   
+
+    if( empty( $_CONTEXT[ 'auth_user' ] ) ) {
+        echo "Авторизуйтесь для подтверждения почты";
         exit ;
     }
-    // извлекаем код подтверждения по id пользователя
-    $sql = "SELECT u.confirm FROM Users u WHERE u.id = '{$_CONTEXT['auth_user']['id']}'" ;
+    // Извлекаем код подтверждения по id пользователя
+    $sql = "SELECT u.confirm FROM Users u WHERE u.id = '{$_CONTEXT['auth_user']['id']}' " ;
     try {
-        $db_code = $_CONTEXT[ 'connection' ]->query( $sql )->fetch( PDO::FETCH_NUM)[0] ;
+        $db_code = $_CONTEXT[ 'connection' ]->query( $sql )->fetch( PDO::FETCH_NUM )[0] ;
         if( $db_code == NULL ) {
             echo "Почта подтверждена, действий не требуется" ;
             exit ;
         }
         else if( $db_code == $_GET[ 'code' ] ) {
             // Код подтвержден - сбрасываем в БД
-            $sql = "UPDATE Users u SET u.confirm = NULL WHERE u.id = '{$_CONTEXT['auth_user']['id']}'";
+            $sql = "UPDATE Users u SET u.confirm = NULL WHERE u.id = '{$_CONTEXT['auth_user']['id']}' ";
             $_CONTEXT[ 'connection' ]->query( $sql ) ;
             echo "Почта подтверждена" ;
             exit ;
